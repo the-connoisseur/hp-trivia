@@ -15,8 +15,8 @@ leptos_axum = { version = "0.8.0", optional = true }
 leptos_meta = { version = "0.8.0" }
 tokio = { version = "1", features = ["rt-multi-thread"], optional = true }
 wasm-bindgen = { version = "=0.2.103", optional = true }
-diesel = { version = "2.3.2", features = ["sqlite"], optional = true }
-r2d2 = { version = "0.8.10", optional = true }
+diesel = { version = "2.3.2", features = ["r2d2", "sqlite"], optional = true }
+dotenvy = { version = "0.15", optional = true }
 
 [features]
 hydrate = [
@@ -29,7 +29,7 @@ ssr = [
     "dep:tokio",
     "dep:leptos_axum",
     "dep:diesel",
-    "dep:r2d2",
+    "dep:dotenvy",
     "leptos/ssr",
     "leptos_meta/ssr",
     "leptos_router/ssr",
