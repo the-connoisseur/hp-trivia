@@ -20,12 +20,14 @@ serde = { version = "1.0", features = ["derive"] }
 thiserror = "1.0"
 tokio = { version = "1", features = ["rt-multi-thread"], optional = true }
 wasm-bindgen = { version = "=0.2.103", optional = true }
+web-sys = {version = "0.3", features = ["Window", "Location"], optional = true }
 
 [features]
 hydrate = [
     "leptos/hydrate",
     "dep:console_error_panic_hook",
     "dep:wasm-bindgen",
+    "dep:web-sys",
 ]
 ssr = [
     "dep:axum",

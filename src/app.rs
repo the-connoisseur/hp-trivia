@@ -13,6 +13,8 @@ use leptos_router::hooks::use_params;
 use leptos_router::params::Params;
 use leptos_router::path;
 use leptos_sweetalert::*;
+#[cfg(feature = "hydrate")]
+use web_sys::window;
 
 #[derive(Debug, Clone, thiserror::Error, serde::Serialize, serde::Deserialize)]
 pub enum AppError {
@@ -122,6 +124,9 @@ pub fn App() -> impl IntoView {
 
 #[component]
 fn GridPage() -> impl IntoView {
+    let answered_resource =
+        LocalResource::new(|| async { get_answered().await.ok().unwrap_or_default() });
+
     let confirm_and_reset = move |_| {
         Swal::fire(SwalOptions {
             title: "WARNING",
@@ -136,31 +141,72 @@ fn GridPage() -> impl IntoView {
                 spawn_local(async move {
                     let _ = reset_game().await;
                 });
+                // Reload page to refetch answered_resource and update grid.
+                #[cfg(feature = "hydrate")]
+                {
+                    if let Some(w) = window() {
+                        let _ = w.location().reload();
+                    }
+                }
                 Swal::close(Some(SwalResult::confirmed()));
             },
             ..SwalOptions::default()
         });
     };
 
-    view! {
-        <div>
-            <button on:click=confirm_and_reset>"Reset Game"</button>
+    let is_answered = move |col: usize, row: usize, answered: &[(usize, usize)]| {
+        answered.iter().any(|&(c, q)| c == col && q == row)
+    };
 
-            <table>
+    view! {
+        <div class="grid-container">
+            <button class="reset-btn" on:click=confirm_and_reset>
+                "Reset Game"
+            </button>
+
+            <table class="jeopardy-grid">
                 <thead>
-                    <tr>{CATEGORIES.iter().map(|c| view! { <th>{c.0}</th> }).collect_view()}</tr>
+                    <tr>
+                        {CATEGORIES
+                            .iter()
+                            .enumerate()
+                            .map(|(i, c)| {
+                                let col_class = format!("category-header category-{}", i);
+                                view! { <th class=col_class>{c.0}</th> }
+                            })
+                            .collect_view()}
+                    </tr>
                 </thead>
                 <tbody>
                     {(0..6)
                         .map(|row| {
                             view! {
-                                <tr>
+                                <tr class="point-row">
                                     {(0..5)
                                         .map(|col| {
                                             let points = (row + 1) * 10;
+                                            let cell_class = move || {
+                                                let maybe_answered = answered_resource.read().clone();
+                                                maybe_answered
+                                                    .map_or_else(
+                                                        || format!("cell category-{}", col),
+                                                        |answered| {
+                                                            if is_answered(col, row, &answered) {
+                                                                "cell answered".to_string()
+                                                            } else {
+                                                                format!("cell category-{}", col)
+                                                            }
+                                                        },
+                                                    )
+                                            };
                                             view! {
-                                                <td>
-                                                    <a href=format!("/question/{}/{}", col, row)>{points}</a>
+                                                <td class=cell_class>
+                                                    <a
+                                                        class="cell-link"
+                                                        href=format!("/question/{}/{}", col, row)
+                                                    >
+                                                        {points}
+                                                    </a>
                                                 </td>
                                             }
                                         })
@@ -228,15 +274,22 @@ fn QuestionPage() -> impl IntoView {
     });
 
     view! {
-        <div>
-            <h2>{q_text}</h2>
-            <Show when=move || revealed.get() fallback=|| view! { <p>"Click to reveal..."</p> }>
-                <div>
-                    <strong>"Answer: " {a_text}</strong>
+        <div class="question-container">
+            <h2 class="question-text">{q_text}</h2>
+            <Show
+                when=move || revealed.get()
+                fallback=|| view! { <p class="reveal-prompt">"Click to reveal..."</p> }
+            >
+                <div class="answer-section">
+                    <strong class="answer-text">"Answer: " {a_text}</strong>
                 </div>
             </Show>
-            <button on:click=move |_| revealed.set(true)>"Answer"</button>
-            <a href="/">"Back"</a>
+            <button class="reveal-btn" on:click=move |_| revealed.set(true)>
+                "Answer"
+            </button>
+            <a class="back-link" href="/">
+                "Back"
+            </a>
         </div>
     }
 }

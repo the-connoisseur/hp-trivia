@@ -1,4 +1,190 @@
+// Global dark theme
 body {
-	font-family: sans-serif;
-	text-align: center;
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 20px;
+  line-height: 1.6;
+}
+
+// Grid Page Styles
+.grid-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.reset-btn {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 16px;
+
+  &:hover {
+    background-color: #555;
+  }
+}
+
+.jeopardy-grid {
+  border-collapse: collapse;
+  width: 100%;
+  background-color: #2a2a2a;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.jeopardy-grid th,
+.jeopardy-grid td {
+  border: 2px solid #444;
+  padding: 0;
+  text-align: center;
+  height: 60px;
+  vertical-align: middle;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.jeopardy-grid th {
+  font-size: 14px;
+  height: 50px;
+  padding: 10px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+// Category-specific bright colors for headers and cells
+.category-header {
+  &.category-0 { background-color: #FF6B6B; } // Red
+  &.category-1 { background-color: #4ECDC4; } // Teal
+  &.category-2 { background-color: #45B7D1; } // Blue
+  &.category-3 { background-color: #96CEB4; } // Green
+  &.category-4 { background-color: #FFEAA7; } // Yellow
+}
+
+.cell {
+  position: relative;
+  color: #000; // Dark text on bright backgrounds
+
+  &.category-0 { background-color: #FF6B6B; }
+  &.category-1 { background-color: #4ECDC4; }
+  &.category-2 { background-color: #45B7D1; }
+  &.category-3 { background-color: #96CEB4; }
+  &.category-4 { background-color: #FFEAA7; }
+
+  // Gray for answered questions
+  &.answered {
+    background-color: #808080 !important;
+    color: #ccc;
+    opacity: 0.7;
+  }
+}
+
+.cell-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+  padding: 15px;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:visited {
+    color: inherit;
+  }
+}
+
+.point-row:nth-child(even) {
+  // Optional: Subtle alternation for rows if desired
+}
+
+// Question Page Styles
+.question-container {
+  max-width: 800px;
+  margin: 40px auto;
+  background-color: #2a2a2a;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.question-text {
+  color: #e0e0e0;
+  font-size: 24px;
+  margin-bottom: 30px;
+  line-height: 1.4;
+}
+
+.reveal-prompt {
+  color: #aaa;
+  font-style: italic;
+  margin-bottom: 20px;
+}
+
+.answer-section {
+  margin: 20px 0;
+}
+
+.answer-text {
+  color: #fff;
+  font-size: 20px;
+  background-color: #333;
+  padding: 15px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.reveal-btn {
+  background-color: #4ECDC4;
+  color: #000;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 10px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #45B7D1;
+  }
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 20px;
+  color: #4ECDC4;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: 1px solid #4ECDC4;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #fff;
+    background-color: #4ECDC4;
+  }
+}
+
+// Responsive tweaks
+@media (max-width: 768px) {
+  .jeopardy-grid th,
+  .jeopardy-grid td {
+    font-size: 14px;
+    height: 50px;
+  }
+
+  .question-container {
+    padding: 20px;
+    margin: 20px;
+  }
 }
