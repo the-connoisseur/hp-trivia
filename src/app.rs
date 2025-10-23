@@ -86,6 +86,12 @@ pub fn shell(options: LeptosOptions) -> impl IntoView {
             <head>
                 <meta charset="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+                <link
+                    href="https://fonts.googleapis.com/css2?family=Bangers&display=swap"
+                    rel="stylesheet"
+                />
                 <AutoReload options=options.clone() />
                 <HydrationScripts options />
                 <MetaTags />
@@ -159,64 +165,66 @@ fn GridPage() -> impl IntoView {
     };
 
     view! {
-        <div class="grid-container">
-            <button class="reset-btn" on:click=confirm_and_reset>
-                "Reset Game"
-            </button>
+        <div class="grid-wrapper">
+            <div class="grid-container">
+                <button class="reset-btn" on:click=confirm_and_reset>
+                    "Reset Game"
+                </button>
 
-            <table class="jeopardy-grid">
-                <thead>
-                    <tr>
-                        {CATEGORIES
-                            .iter()
-                            .enumerate()
-                            .map(|(i, c)| {
-                                let col_class = format!("category-header category-{}", i);
-                                view! { <th class=col_class>{c.0}</th> }
+                <table class="jeopardy-grid">
+                    <thead>
+                        <tr>
+                            {CATEGORIES
+                                .iter()
+                                .enumerate()
+                                .map(|(i, c)| {
+                                    let col_class = format!("category-header category-{}", i);
+                                    view! { <th class=col_class>{c.0}</th> }
+                                })
+                                .collect_view()}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {(0..6)
+                            .map(|row| {
+                                view! {
+                                    <tr class="point-row">
+                                        {(0..5)
+                                            .map(|col| {
+                                                let points = (row + 1) * 10;
+                                                let cell_class = move || {
+                                                    let maybe_answered = answered_resource.read().clone();
+                                                    maybe_answered
+                                                        .map_or_else(
+                                                            || format!("cell category-{}", col),
+                                                            |answered| {
+                                                                if is_answered(col, row, &answered) {
+                                                                    "cell answered".to_string()
+                                                                } else {
+                                                                    format!("cell category-{}", col)
+                                                                }
+                                                            },
+                                                        )
+                                                };
+                                                view! {
+                                                    <td class=cell_class>
+                                                        <a
+                                                            class="cell-link"
+                                                            href=format!("/question/{}/{}", col, row)
+                                                        >
+                                                            {points}
+                                                        </a>
+                                                    </td>
+                                                }
+                                            })
+                                            .collect_view()}
+                                    </tr>
+                                }
                             })
                             .collect_view()}
-                    </tr>
-                </thead>
-                <tbody>
-                    {(0..6)
-                        .map(|row| {
-                            view! {
-                                <tr class="point-row">
-                                    {(0..5)
-                                        .map(|col| {
-                                            let points = (row + 1) * 10;
-                                            let cell_class = move || {
-                                                let maybe_answered = answered_resource.read().clone();
-                                                maybe_answered
-                                                    .map_or_else(
-                                                        || format!("cell category-{}", col),
-                                                        |answered| {
-                                                            if is_answered(col, row, &answered) {
-                                                                "cell answered".to_string()
-                                                            } else {
-                                                                format!("cell category-{}", col)
-                                                            }
-                                                        },
-                                                    )
-                                            };
-                                            view! {
-                                                <td class=cell_class>
-                                                    <a
-                                                        class="cell-link"
-                                                        href=format!("/question/{}/{}", col, row)
-                                                    >
-                                                        {points}
-                                                    </a>
-                                                </td>
-                                            }
-                                        })
-                                        .collect_view()}
-                                </tr>
-                            }
-                        })
-                        .collect_view()}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     }
 }

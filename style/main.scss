@@ -4,17 +4,39 @@ body {
   color: #e0e0e0;
   font-family: 'Arial', sans-serif;
   margin: 0;
-  padding: 20px;
+  padding: 10px;
   line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 // Grid Page Styles
+.grid-wrapper {
+  position: relative;
+  width: 100%;
+  height: 95vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .grid-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 95vw;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .reset-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
   background-color: #333;
   color: #fff;
   border: 1px solid #555;
@@ -30,34 +52,43 @@ body {
 }
 
 .jeopardy-grid {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 8px;
   width: 100%;
-  background-color: #2a2a2a;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  max-width: 1200px;
+  height: 80vh;
+  background-color: transparent;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .jeopardy-grid th,
 .jeopardy-grid td {
   border: 2px solid #444;
+  border-radius: 8px;
   padding: 0;
   text-align: center;
-  height: 60px;
+  height: 100px;
+  width: 20%;
   vertical-align: middle;
   font-weight: bold;
-  font-size: 18px;
 }
 
 .jeopardy-grid th {
-  font-size: 14px;
-  height: 50px;
-  padding: 10px;
-  color: #fff;
+  font-size: 18px;
+  height: 80px;
+  padding: 15px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  color: #000;
+  font-weight: bold;
 }
 
 // Category-specific bright colors for headers and cells
 .category-header {
+  color: #000;
+
   &.category-0 { background-color: #FF6B6B; } // Red
   &.category-1 { background-color: #4ECDC4; } // Teal
   &.category-2 { background-color: #45B7D1; } // Blue
@@ -84,12 +115,16 @@ body {
 }
 
 .cell-link {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
   text-decoration: none;
   color: inherit;
-  padding: 15px;
+  font-family: 'Bangers', cursive;
+  font-size: 28px;
+  font-weight: bold;
   transition: opacity 0.2s ease;
 
   &:hover {
@@ -181,6 +216,7 @@ body {
   .jeopardy-grid td {
     font-size: 14px;
     height: 50px;
+    width: auto;
   }
 
   .question-container {
