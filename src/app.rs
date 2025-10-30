@@ -132,6 +132,10 @@ pub fn App() -> impl IntoView {
 fn GridPage() -> impl IntoView {
     let answered_resource =
         LocalResource::new(|| async { get_answered().await.ok().unwrap_or_default() });
+    let gryffindor_score = RwSignal::new(0i32);
+    let hufflepuff_score = RwSignal::new(0i32);
+    let ravenclaw_score = RwSignal::new(0i32);
+    let slytherin_score = RwSignal::new(0i32);
 
     let confirm_and_reset = move |_| {
         Swal::fire(SwalOptions {
@@ -165,6 +169,41 @@ fn GridPage() -> impl IntoView {
     };
 
     view! {
+        <div class="main-container">
+            <div class="left-container">
+                <div class="house-section">
+                    <div class="house-header-text">"Gryffindor"</div>
+                    <div class="score-controls">
+                        <div class="button-stack">
+                            <button class="score-btn" on:click=move |_| gryffindor_score.update(|s| *s -= 5)>"-5"</button>
+                            <button class="score-btn" on:click=move |_| gryffindor_score.update(|s| *s -= 10)>"-10"</button>
+                        </div>
+                        <div class="score-display">
+                            <span class="score-text">{move || gryffindor_score.get().to_string()}</span>
+                        </div>
+                        <div class="button-stack">
+                            <button class="score-btn" on:click=move |_| gryffindor_score.update(|s| *s += 5)>"+5"</button>
+                            <button class="score-btn" on:click=move |_| gryffindor_score.update(|s| *s += 10)>"+10"</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="house-section">
+                    <div class="house-header-text">"Hufflepuff"</div>
+                    <div class="score-controls">
+                        <div class="button-stack">
+                            <button class="score-btn" on:click=move |_| hufflepuff_score.update(|s| *s -= 5)>"-5"</button>
+                            <button class="score-btn" on:click=move |_| hufflepuff_score.update(|s| *s -= 10)>"-10"</button>
+                        </div>
+                        <div class="score-display">
+                            <span class="score-text">{move || hufflepuff_score.get().to_string()}</span>
+                        </div>
+                        <div class="button-stack">
+                            <button class="score-btn" on:click=move |_| hufflepuff_score.update(|s| *s += 5)>"+5"</button>
+                            <button class="score-btn" on:click=move |_| hufflepuff_score.update(|s| *s += 10)>"+10"</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         <div class="grid-wrapper">
             <div class="grid-container">
                 <button class="reset-btn" on:click=confirm_and_reset>
@@ -224,6 +263,41 @@ fn GridPage() -> impl IntoView {
                             .collect_view()}
                     </tbody>
                 </table>
+            </div>
+        </div>
+            <div class="right-container">
+                <div class="house-section">
+                    <div class="house-header-text">"Ravenclaw"</div>
+                    <div class="score-controls">
+                        <div class="button-stack">
+                            <button class="score-btn" on:click=move |_| ravenclaw_score.update(|s| *s -= 5)>"-5"</button>
+                            <button class="score-btn" on:click=move |_| ravenclaw_score.update(|s| *s -= 10)>"-10"</button>
+                        </div>
+                        <div class="score-display">
+                            <span class="score-text">{move || ravenclaw_score.get().to_string()}</span>
+                        </div>
+                        <div class="button-stack">
+                            <button class="score-btn" on:click=move |_| ravenclaw_score.update(|s| *s += 5)>"+5"</button>
+                            <button class="score-btn" on:click=move |_| ravenclaw_score.update(|s| *s += 10)>"+10"</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="house-section">
+                    <div class="house-header-text">"Slytherin"</div>
+                    <div class="score-controls">
+                        <div class="button-stack">
+                            <button class="score-btn" on:click=move |_| slytherin_score.update(|s| *s -= 5)>"-5"</button>
+                            <button class="score-btn" on:click=move |_| slytherin_score.update(|s| *s -= 10)>"-10"</button>
+                        </div>
+                        <div class="score-display">
+                            <span class="score-text">{move || slytherin_score.get().to_string()}</span>
+                        </div>
+                        <div class="button-stack">
+                            <button class="score-btn" on:click=move |_| slytherin_score.update(|s| *s += 5)>"+5"</button>
+                            <button class="score-btn" on:click=move |_| slytherin_score.update(|s| *s += 10)>"+10"</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     }
