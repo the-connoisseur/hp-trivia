@@ -2,6 +2,8 @@ use crate::data::{get_question_and_answer, CATEGORIES};
 #[cfg(feature = "ssr")]
 use crate::schema::answered_questions::dsl::*;
 #[cfg(feature = "ssr")]
+use crate::schema::scores::dsl::*;
+#[cfg(feature = "ssr")]
 use diesel::prelude::*;
 #[cfg(feature = "ssr")]
 use diesel::r2d2::{ConnectionManager, Pool};
@@ -75,7 +77,61 @@ pub async fn reset_game() -> Result<(), AppError> {
     diesel::delete(answered_questions)
         .execute(&mut conn)
         .map_err(|e| AppError::DbError(e.to_string()))?;
+    for h in 0..4i32 {
+        diesel::replace_into(scores)
+            .values((house.eq(h), score.eq(0i32)))
+            .execute(&mut conn)
+            .map_err(|e| AppError::DbError(e.to_string()))?;
+    }
     leptos::logging::log!("Reset successful!");
+    Ok(())
+}
+
+// Fetches all house scores from the database.
+#[server(GetScores, "/api")]
+pub async fn get_scores() -> Result<[i32; 4], AppError> {
+    let pool: DbPool = expect_context();
+    let mut conn = pool.get().map_err(|e| AppError::DbError(e.to_string()))?;
+    let results: Vec<(i32, i32)> = scores
+        .select((house, score))
+        .order(house.asc())
+        .load(&mut conn)
+        .map_err(|e| AppError::DbError(e.to_string()))?;
+    let mut house_scores = [0i32; 4];
+    for (h, s) in results {
+        if h >= 0 && (h as usize) < 4 {
+            house_scores[h as usize] = s;
+        }
+    }
+    leptos::logging::log!("Got scores: {:?}", house_scores);
+    Ok(house_scores)
+}
+
+// Updates a house score by delta.
+#[server(UpdateScore, "/api")]
+pub async fn update_score(house_idx: usize, delta: i32) -> Result<(), AppError> {
+    let pool: DbPool = expect_context();
+    let mut conn = pool.get().map_err(|e| AppError::DbError(e.to_string()))?;
+    // Fetch current score (or 0 if none).
+    let current_score: Option<(i32, i32)> = scores
+        .select((house, score))
+        .filter(house.eq(house_idx as i32))
+        .first::<(i32, i32)>(&mut conn)
+        .optional()
+        .map_err(|e| AppError::DbError(e.to_string()))?;
+    let current = current_score.map_or(0i32, |s| s.1);
+    let new_score = current + delta;
+    let affected = diesel::insert_or_ignore_into(scores)
+        .values((house.eq(house_idx as i32), score.eq(new_score)))
+        .execute(&mut conn)
+        .map_err(|e| AppError::DbError(e.to_string()))?;
+    if affected == 0 {
+        diesel::update(scores.filter(house.eq(house_idx as i32)))
+            .set(score.eq(new_score))
+            .execute(&mut conn)
+            .map_err(|e| AppError::DbError(e.to_string()))?;
+    }
+    leptos::logging::log!("Updated house {} score to {}", house_idx, new_score);
     Ok(())
 }
 
@@ -132,11 +188,13 @@ pub fn App() -> impl IntoView {
 fn GridPage() -> impl IntoView {
     let answered_resource =
         LocalResource::new(|| async { get_answered().await.ok().unwrap_or_default() });
+    let scores_resource =
+        LocalResource::new(|| async { get_scores().await.ok().unwrap_or([0i32; 4]) });
 
-    let gryffindor_score = RwSignal::new(0i32);
-    let hufflepuff_score = RwSignal::new(0i32);
-    let ravenclaw_score = RwSignal::new(0i32);
-    let slytherin_score = RwSignal::new(0i32);
+    let gryffindor_score = Memo::new(move |_| scores_resource.read().map(|s| s[0]).unwrap_or(0));
+    let hufflepuff_score = Memo::new(move |_| scores_resource.read().map(|s| s[1]).unwrap_or(0));
+    let ravenclaw_score = Memo::new(move |_| scores_resource.read().map(|s| s[2]).unwrap_or(0));
+    let slytherin_score = Memo::new(move |_| scores_resource.read().map(|s| s[3]).unwrap_or(0));
 
     let gryffindor_avada_kedavra_clicked = RwSignal::new(false);
     let gryffindor_crucio_clicked = RwSignal::new(false);
@@ -191,13 +249,23 @@ fn GridPage() -> impl IntoView {
                         <div class="button-stack">
                             <button
                                 class="score-btn"
-                                on:click=move |_| gryffindor_score.update(|s| *s -= 5)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(0, -5).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "-5"
                             </button>
                             <button
                                 class="score-btn"
-                                on:click=move |_| gryffindor_score.update(|s| *s -= 10)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(0, -10).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "-10"
                             </button>
@@ -210,13 +278,23 @@ fn GridPage() -> impl IntoView {
                         <div class="button-stack">
                             <button
                                 class="score-btn"
-                                on:click=move |_| gryffindor_score.update(|s| *s += 5)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(0, 5).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "+5"
                             </button>
                             <button
                                 class="score-btn"
-                                on:click=move |_| gryffindor_score.update(|s| *s += 10)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(0, 10).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "+10"
                             </button>
@@ -278,13 +356,23 @@ fn GridPage() -> impl IntoView {
                         <div class="button-stack">
                             <button
                                 class="score-btn"
-                                on:click=move |_| hufflepuff_score.update(|s| *s -= 5)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(1, -5).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "-5"
                             </button>
                             <button
                                 class="score-btn"
-                                on:click=move |_| hufflepuff_score.update(|s| *s -= 10)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(1, -10).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "-10"
                             </button>
@@ -297,13 +385,23 @@ fn GridPage() -> impl IntoView {
                         <div class="button-stack">
                             <button
                                 class="score-btn"
-                                on:click=move |_| hufflepuff_score.update(|s| *s += 5)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(1, 5).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "+5"
                             </button>
                             <button
                                 class="score-btn"
-                                on:click=move |_| hufflepuff_score.update(|s| *s += 10)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(1, 10).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "+10"
                             </button>
@@ -428,13 +526,23 @@ fn GridPage() -> impl IntoView {
                         <div class="button-stack">
                             <button
                                 class="score-btn"
-                                on:click=move |_| ravenclaw_score.update(|s| *s -= 5)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(2, -5).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "-5"
                             </button>
                             <button
                                 class="score-btn"
-                                on:click=move |_| ravenclaw_score.update(|s| *s -= 10)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(2, -10).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "-10"
                             </button>
@@ -447,13 +555,23 @@ fn GridPage() -> impl IntoView {
                         <div class="button-stack">
                             <button
                                 class="score-btn"
-                                on:click=move |_| ravenclaw_score.update(|s| *s += 5)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(2, 5).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "+5"
                             </button>
                             <button
                                 class="score-btn"
-                                on:click=move |_| ravenclaw_score.update(|s| *s += 10)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(2, 10).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "+10"
                             </button>
@@ -515,13 +633,23 @@ fn GridPage() -> impl IntoView {
                         <div class="button-stack">
                             <button
                                 class="score-btn"
-                                on:click=move |_| slytherin_score.update(|s| *s -= 5)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(3, -5).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "-5"
                             </button>
                             <button
                                 class="score-btn"
-                                on:click=move |_| slytherin_score.update(|s| *s -= 10)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(3, -10).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "-10"
                             </button>
@@ -534,13 +662,23 @@ fn GridPage() -> impl IntoView {
                         <div class="button-stack">
                             <button
                                 class="score-btn"
-                                on:click=move |_| slytherin_score.update(|s| *s += 5)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(3, 5).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "+5"
                             </button>
                             <button
                                 class="score-btn"
-                                on:click=move |_| slytherin_score.update(|s| *s += 10)
+                                on:click=move |_| {
+                                    spawn_local(async move {
+                                        let _ = update_score(3, 10).await;
+                                        scores_resource.refetch();
+                                    });
+                                }
                             >
                                 "+10"
                             </button>
@@ -656,10 +794,7 @@ fn QuestionPage() -> impl IntoView {
     view! {
         <div class="question-container">
             <h2 class="question-text">{q_text}</h2>
-            <Show
-                when=move || revealed.get()
-                fallback=|| view! { <p /> }
-            >
+            <Show when=move || revealed.get() fallback=|| view! { <p /> }>
                 <div class="answer-section">
                     <strong class="answer-text">{a_text}</strong>
                 </div>
