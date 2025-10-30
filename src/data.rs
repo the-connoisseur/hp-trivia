@@ -26,7 +26,7 @@ pub const CATEGORIES: &[(&str, &[(&str, &str)])] = &[
         &[
             ("Hippogriffs are a cross between which two animals?", "Horses and eagles"),
             ("What creature pulls the carriages at Hogwarts, that are only able to be seen by some?", "Thestral"),
-            ("Question Three", "Answer Three"),
+            ("What is the name of the centaur who saves Harry from Quirrel in the Forbidden Forest?", "Firenze"),
             ("What breed of dragon guards the high security vaults in Gringotts?", "Ukrainian Ironbelly"),
             ("What is Ron's pet owl's name? BONUS: Who names him?", "Pigwidgeon\nGinny"),
             ("What breeds are the four dragons in the Triwizard Tournament, and who gets which one?", "Swedish Short Snout - Cedric, Chinese Fireball - Krum, \nCommon Welsh Green - Fleur, Hungarian Horntail - Harry"),
