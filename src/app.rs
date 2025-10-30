@@ -132,10 +132,24 @@ pub fn App() -> impl IntoView {
 fn GridPage() -> impl IntoView {
     let answered_resource =
         LocalResource::new(|| async { get_answered().await.ok().unwrap_or_default() });
+
     let gryffindor_score = RwSignal::new(0i32);
     let hufflepuff_score = RwSignal::new(0i32);
     let ravenclaw_score = RwSignal::new(0i32);
     let slytherin_score = RwSignal::new(0i32);
+
+    let gryffindor_avada_kedavra_clicked = RwSignal::new(false);
+    let gryffindor_crucio_clicked = RwSignal::new(false);
+    let gryffindor_imperio_clicked = RwSignal::new(false);
+    let hufflepuff_avada_kedavra_clicked = RwSignal::new(false);
+    let hufflepuff_crucio_clicked = RwSignal::new(false);
+    let hufflepuff_imperio_clicked = RwSignal::new(false);
+    let ravenclaw_avada_kedavra_clicked = RwSignal::new(false);
+    let ravenclaw_crucio_clicked = RwSignal::new(false);
+    let ravenclaw_imperio_clicked = RwSignal::new(false);
+    let slytherin_avada_kedavra_clicked = RwSignal::new(false);
+    let slytherin_crucio_clicked = RwSignal::new(false);
+    let slytherin_imperio_clicked = RwSignal::new(false);
 
     let confirm_and_reset = move |_| {
         Swal::fire(SwalOptions {
@@ -175,15 +189,86 @@ fn GridPage() -> impl IntoView {
                     <div class="house-header-text">"Gryffindor"</div>
                     <div class="score-controls">
                         <div class="button-stack">
-                            <button class="score-btn" on:click=move |_| gryffindor_score.update(|s| *s -= 5)>"-5"</button>
-                            <button class="score-btn" on:click=move |_| gryffindor_score.update(|s| *s -= 10)>"-10"</button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| gryffindor_score.update(|s| *s -= 5)
+                            >
+                                "-5"
+                            </button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| gryffindor_score.update(|s| *s -= 10)
+                            >
+                                "-10"
+                            </button>
                         </div>
                         <div class="score-display">
-                            <span class="score-text">{move || gryffindor_score.get().to_string()}</span>
+                            <span class="score-text">
+                                {move || gryffindor_score.get().to_string()}
+                            </span>
                         </div>
                         <div class="button-stack">
-                            <button class="score-btn" on:click=move |_| gryffindor_score.update(|s| *s += 5)>"+5"</button>
-                            <button class="score-btn" on:click=move |_| gryffindor_score.update(|s| *s += 10)>"+10"</button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| gryffindor_score.update(|s| *s += 5)
+                            >
+                                "+5"
+                            </button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| gryffindor_score.update(|s| *s += 10)
+                            >
+                                "+10"
+                            </button>
+                        </div>
+                    </div>
+                    <div class="image-stack">
+                        <div
+                            class=move || {
+                                if gryffindor_avada_kedavra_clicked.get() {
+                                    "image-container clicked"
+                                } else {
+                                    "image-container"
+                                }
+                            }
+                            on:click=move |_| {
+                                gryffindor_avada_kedavra_clicked
+                                    .set(!gryffindor_avada_kedavra_clicked.get())
+                            }
+                        >
+                            <img
+                                src="/images/avada_kedavra.png"
+                                alt="Curse 1"
+                                class="house-image"
+                            />
+                        </div>
+                        <div
+                            class=move || {
+                                if gryffindor_crucio_clicked.get() {
+                                    "image-container clicked"
+                                } else {
+                                    "image-container"
+                                }
+                            }
+                            on:click=move |_| {
+                                gryffindor_crucio_clicked.set(!gryffindor_crucio_clicked.get())
+                            }
+                        >
+                            <img src="/images/crucio.png" alt="Curse 2" class="house-image" />
+                        </div>
+                        <div
+                            class=move || {
+                                if gryffindor_imperio_clicked.get() {
+                                    "image-container clicked"
+                                } else {
+                                    "image-container"
+                                }
+                            }
+                            on:click=move |_| {
+                                gryffindor_imperio_clicked.set(!gryffindor_imperio_clicked.get())
+                            }
+                        >
+                            <img src="/images/imperio.png" alt="Curse 3" class="house-image" />
                         </div>
                     </div>
                 </div>
@@ -191,94 +276,236 @@ fn GridPage() -> impl IntoView {
                     <div class="house-header-text">"Hufflepuff"</div>
                     <div class="score-controls">
                         <div class="button-stack">
-                            <button class="score-btn" on:click=move |_| hufflepuff_score.update(|s| *s -= 5)>"-5"</button>
-                            <button class="score-btn" on:click=move |_| hufflepuff_score.update(|s| *s -= 10)>"-10"</button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| hufflepuff_score.update(|s| *s -= 5)
+                            >
+                                "-5"
+                            </button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| hufflepuff_score.update(|s| *s -= 10)
+                            >
+                                "-10"
+                            </button>
                         </div>
                         <div class="score-display">
-                            <span class="score-text">{move || hufflepuff_score.get().to_string()}</span>
+                            <span class="score-text">
+                                {move || hufflepuff_score.get().to_string()}
+                            </span>
                         </div>
                         <div class="button-stack">
-                            <button class="score-btn" on:click=move |_| hufflepuff_score.update(|s| *s += 5)>"+5"</button>
-                            <button class="score-btn" on:click=move |_| hufflepuff_score.update(|s| *s += 10)>"+10"</button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| hufflepuff_score.update(|s| *s += 5)
+                            >
+                                "+5"
+                            </button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| hufflepuff_score.update(|s| *s += 10)
+                            >
+                                "+10"
+                            </button>
+                        </div>
+                    </div>
+                    <div class="image-stack">
+                        <div
+                            class=move || {
+                                if hufflepuff_avada_kedavra_clicked.get() {
+                                    "image-container clicked"
+                                } else {
+                                    "image-container"
+                                }
+                            }
+                            on:click=move |_| {
+                                hufflepuff_avada_kedavra_clicked
+                                    .set(!hufflepuff_avada_kedavra_clicked.get())
+                            }
+                        >
+                            <img
+                                src="/images/avada_kedavra.png"
+                                alt="Curse 1"
+                                class="house-image"
+                            />
+                        </div>
+                        <div
+                            class=move || {
+                                if hufflepuff_crucio_clicked.get() {
+                                    "image-container clicked"
+                                } else {
+                                    "image-container"
+                                }
+                            }
+                            on:click=move |_| {
+                                hufflepuff_crucio_clicked.set(!hufflepuff_crucio_clicked.get())
+                            }
+                        >
+                            <img src="/images/crucio.png" alt="Curse 2" class="house-image" />
+                        </div>
+                        <div
+                            class=move || {
+                                if hufflepuff_imperio_clicked.get() {
+                                    "image-container clicked"
+                                } else {
+                                    "image-container"
+                                }
+                            }
+                            on:click=move |_| {
+                                hufflepuff_imperio_clicked.set(!hufflepuff_imperio_clicked.get())
+                            }
+                        >
+                            <img src="/images/imperio.png" alt="Curse 3" class="house-image" />
                         </div>
                     </div>
                 </div>
             </div>
-        <div class="grid-wrapper">
-            <div class="grid-container">
-                <button class="reset-btn" on:click=confirm_and_reset>
-                    "Reset Game"
-                </button>
+            <div class="grid-wrapper">
+                <div class="grid-container">
+                    <button class="reset-btn" on:click=confirm_and_reset>
+                        "Reset Game"
+                    </button>
 
-                <table class="jeopardy-grid">
-                    <thead>
-                        <tr>
-                            {CATEGORIES
-                                .iter()
-                                .enumerate()
-                                .map(|(i, c)| {
-                                    let col_class = format!("category-header category-{}", i);
-                                    view! { <th class=col_class>{c.0}</th> }
+                    <table class="jeopardy-grid">
+                        <thead>
+                            <tr>
+                                {CATEGORIES
+                                    .iter()
+                                    .enumerate()
+                                    .map(|(i, c)| {
+                                        let col_class = format!("category-header category-{}", i);
+                                        view! { <th class=col_class>{c.0}</th> }
+                                    })
+                                    .collect_view()}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {(0..6)
+                                .map(|row| {
+                                    view! {
+                                        <tr class="point-row">
+                                            {(0..5)
+                                                .map(|col| {
+                                                    let points = (row + 1) * 10;
+                                                    let cell_class = move || {
+                                                        let maybe_answered = answered_resource.read().clone();
+                                                        maybe_answered
+                                                            .map_or_else(
+                                                                || format!("cell category-{}", col),
+                                                                |answered| {
+                                                                    if is_answered(col, row, &answered) {
+                                                                        "cell answered".to_string()
+                                                                    } else {
+                                                                        format!("cell category-{}", col)
+                                                                    }
+                                                                },
+                                                            )
+                                                    };
+                                                    view! {
+                                                        <td class=cell_class>
+                                                            <a
+                                                                class="cell-link"
+                                                                href=format!("/question/{}/{}", col, row)
+                                                            >
+                                                                {points}
+                                                            </a>
+                                                        </td>
+                                                    }
+                                                })
+                                                .collect_view()}
+                                        </tr>
+                                    }
                                 })
                                 .collect_view()}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {(0..6)
-                            .map(|row| {
-                                view! {
-                                    <tr class="point-row">
-                                        {(0..5)
-                                            .map(|col| {
-                                                let points = (row + 1) * 10;
-                                                let cell_class = move || {
-                                                    let maybe_answered = answered_resource.read().clone();
-                                                    maybe_answered
-                                                        .map_or_else(
-                                                            || format!("cell category-{}", col),
-                                                            |answered| {
-                                                                if is_answered(col, row, &answered) {
-                                                                    "cell answered".to_string()
-                                                                } else {
-                                                                    format!("cell category-{}", col)
-                                                                }
-                                                            },
-                                                        )
-                                                };
-                                                view! {
-                                                    <td class=cell_class>
-                                                        <a
-                                                            class="cell-link"
-                                                            href=format!("/question/{}/{}", col, row)
-                                                        >
-                                                            {points}
-                                                        </a>
-                                                    </td>
-                                                }
-                                            })
-                                            .collect_view()}
-                                    </tr>
-                                }
-                            })
-                            .collect_view()}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
             <div class="right-container">
                 <div class="house-section">
                     <div class="house-header-text">"Ravenclaw"</div>
                     <div class="score-controls">
                         <div class="button-stack">
-                            <button class="score-btn" on:click=move |_| ravenclaw_score.update(|s| *s -= 5)>"-5"</button>
-                            <button class="score-btn" on:click=move |_| ravenclaw_score.update(|s| *s -= 10)>"-10"</button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| ravenclaw_score.update(|s| *s -= 5)
+                            >
+                                "-5"
+                            </button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| ravenclaw_score.update(|s| *s -= 10)
+                            >
+                                "-10"
+                            </button>
                         </div>
                         <div class="score-display">
-                            <span class="score-text">{move || ravenclaw_score.get().to_string()}</span>
+                            <span class="score-text">
+                                {move || ravenclaw_score.get().to_string()}
+                            </span>
                         </div>
                         <div class="button-stack">
-                            <button class="score-btn" on:click=move |_| ravenclaw_score.update(|s| *s += 5)>"+5"</button>
-                            <button class="score-btn" on:click=move |_| ravenclaw_score.update(|s| *s += 10)>"+10"</button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| ravenclaw_score.update(|s| *s += 5)
+                            >
+                                "+5"
+                            </button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| ravenclaw_score.update(|s| *s += 10)
+                            >
+                                "+10"
+                            </button>
+                        </div>
+                    </div>
+                    <div class="image-stack">
+                        <div
+                            class=move || {
+                                if ravenclaw_avada_kedavra_clicked.get() {
+                                    "image-container clicked"
+                                } else {
+                                    "image-container"
+                                }
+                            }
+                            on:click=move |_| {
+                                ravenclaw_avada_kedavra_clicked
+                                    .set(!ravenclaw_avada_kedavra_clicked.get())
+                            }
+                        >
+                            <img
+                                src="/images/avada_kedavra.png"
+                                alt="Curse 1"
+                                class="house-image"
+                            />
+                        </div>
+                        <div
+                            class=move || {
+                                if ravenclaw_crucio_clicked.get() {
+                                    "image-container clicked"
+                                } else {
+                                    "image-container"
+                                }
+                            }
+                            on:click=move |_| {
+                                ravenclaw_crucio_clicked.set(!ravenclaw_crucio_clicked.get())
+                            }
+                        >
+                            <img src="/images/crucio.png" alt="Curse 2" class="house-image" />
+                        </div>
+                        <div
+                            class=move || {
+                                if ravenclaw_imperio_clicked.get() {
+                                    "image-container clicked"
+                                } else {
+                                    "image-container"
+                                }
+                            }
+                            on:click=move |_| {
+                                ravenclaw_imperio_clicked.set(!ravenclaw_imperio_clicked.get())
+                            }
+                        >
+                            <img src="/images/imperio.png" alt="Curse 3" class="house-image" />
                         </div>
                     </div>
                 </div>
@@ -286,15 +513,86 @@ fn GridPage() -> impl IntoView {
                     <div class="house-header-text">"Slytherin"</div>
                     <div class="score-controls">
                         <div class="button-stack">
-                            <button class="score-btn" on:click=move |_| slytherin_score.update(|s| *s -= 5)>"-5"</button>
-                            <button class="score-btn" on:click=move |_| slytherin_score.update(|s| *s -= 10)>"-10"</button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| slytherin_score.update(|s| *s -= 5)
+                            >
+                                "-5"
+                            </button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| slytherin_score.update(|s| *s -= 10)
+                            >
+                                "-10"
+                            </button>
                         </div>
                         <div class="score-display">
-                            <span class="score-text">{move || slytherin_score.get().to_string()}</span>
+                            <span class="score-text">
+                                {move || slytherin_score.get().to_string()}
+                            </span>
                         </div>
                         <div class="button-stack">
-                            <button class="score-btn" on:click=move |_| slytherin_score.update(|s| *s += 5)>"+5"</button>
-                            <button class="score-btn" on:click=move |_| slytherin_score.update(|s| *s += 10)>"+10"</button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| slytherin_score.update(|s| *s += 5)
+                            >
+                                "+5"
+                            </button>
+                            <button
+                                class="score-btn"
+                                on:click=move |_| slytherin_score.update(|s| *s += 10)
+                            >
+                                "+10"
+                            </button>
+                        </div>
+                    </div>
+                    <div class="image-stack">
+                        <div
+                            class=move || {
+                                if slytherin_avada_kedavra_clicked.get() {
+                                    "image-container clicked"
+                                } else {
+                                    "image-container"
+                                }
+                            }
+                            on:click=move |_| {
+                                slytherin_avada_kedavra_clicked
+                                    .set(!slytherin_avada_kedavra_clicked.get())
+                            }
+                        >
+                            <img
+                                src="/images/avada_kedavra.png"
+                                alt="Curse 1"
+                                class="house-image"
+                            />
+                        </div>
+                        <div
+                            class=move || {
+                                if slytherin_crucio_clicked.get() {
+                                    "image-container clicked"
+                                } else {
+                                    "image-container"
+                                }
+                            }
+                            on:click=move |_| {
+                                slytherin_crucio_clicked.set(!slytherin_crucio_clicked.get())
+                            }
+                        >
+                            <img src="/images/crucio.png" alt="Curse 2" class="house-image" />
+                        </div>
+                        <div
+                            class=move || {
+                                if slytherin_imperio_clicked.get() {
+                                    "image-container clicked"
+                                } else {
+                                    "image-container"
+                                }
+                            }
+                            on:click=move |_| {
+                                slytherin_imperio_clicked.set(!slytherin_imperio_clicked.get())
+                            }
+                        >
+                            <img src="/images/imperio.png" alt="Curse 3" class="house-image" />
                         </div>
                     </div>
                 </div>
