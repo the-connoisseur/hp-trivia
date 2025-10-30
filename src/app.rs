@@ -658,10 +658,10 @@ fn QuestionPage() -> impl IntoView {
             <h2 class="question-text">{q_text}</h2>
             <Show
                 when=move || revealed.get()
-                fallback=|| view! { <p class="reveal-prompt">"Click to reveal..."</p> }
+                fallback=|| view! { <p /> }
             >
                 <div class="answer-section">
-                    <strong class="answer-text">"Answer: " {a_text}</strong>
+                    <strong class="answer-text">{a_text}</strong>
                 </div>
             </Show>
             <button class="reveal-btn" on:click=move |_| revealed.set(true)>
