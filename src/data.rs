@@ -1,6 +1,6 @@
 pub const CATEGORIES: &[(&str, &[(&str, &str)])] = &[
     (
-        "Category One",
+        "General Knowledge",
         &[
             ("Question One", "Answer One"),
             ("Question Two", "Answer Two"),
@@ -11,7 +11,7 @@ pub const CATEGORIES: &[(&str, &[(&str, &str)])] = &[
         ],
     ),
     (
-        "Category Two",
+        "Spells And Potions",
         &[
             ("Question One", "Answer One"),
             ("Question Two", "Answer Two"),
@@ -22,7 +22,7 @@ pub const CATEGORIES: &[(&str, &[(&str, &str)])] = &[
         ],
     ),
     (
-        "Category Three",
+        "Magical Creatures",
         &[
             ("Question One", "Answer One"),
             ("Question Two", "Answer Two"),
@@ -33,7 +33,7 @@ pub const CATEGORIES: &[(&str, &[(&str, &str)])] = &[
         ],
     ),
     (
-        "Category Four",
+        "Quidditch",
         &[
             ("Question One", "Answer One"),
             ("Question Two", "Answer Two"),
@@ -44,7 +44,7 @@ pub const CATEGORIES: &[(&str, &[(&str, &str)])] = &[
         ],
     ),
     (
-        "Category Five",
+        "Who Said It?",
         &[
             ("Question One", "Answer One"),
             ("Question Two", "Answer Two"),
