@@ -289,20 +289,52 @@ body {
 
 // Question Page Styles
 .question-container {
-  max-width: 800px;
-  margin: 40px auto;
+  width: 80vw;
+  height: 80vh;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
   background-color: #2a2a2a;
   padding: 40px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  font-size: clamp(16px, 4vw, 24px); // Scales text with viewport width
   text-align: center;
+}
+
+.question-header {
+  flex: 0 0 auto; // Doesn't grow/shrink, fixed content height
+  width: 100%;
+}
+
+.middle-area {
+  flex: 1; // Takes remaining space
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.button-row {
+  flex: 0 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px; // Space between Answer and Back
 }
 
 .question-text {
   color: #e0e0e0;
-  font-size: 42px;
-  margin-bottom: 30px;
+  font-size: 1.5em;
+  margin-bottom: 0;
   line-height: 1.4;
+  width: 100%;
+  white-space: pre-line; // Preserves \n as line breaks
 }
 
 .reveal-prompt {
@@ -313,15 +345,18 @@ body {
 
 .answer-section {
   margin: 20px 0;
+  width: 100%;
 }
 
 .answer-text {
   color: #fff;
-  font-size: 40px;
+  font-size: 1.2em; // Relative to container
   background-color: #333;
-  padding: 15px;
+  padding: 20px;
   border-radius: 4px;
-  display: inline-block;
+  display: block;
+  white-space: pre-line; // Preserves newlines and spaces
+  line-height: 1.5;
 }
 
 .reveal-btn {
@@ -334,6 +369,7 @@ body {
   cursor: pointer;
   margin: 10px;
   transition: background-color 0.2s ease;
+  align-self: center;
 
   &:hover {
     background-color: #45B7D1;
@@ -350,6 +386,7 @@ body {
   border: 1px solid #4ECDC4;
   border-radius: 4px;
   transition: color 0.2s ease;
+  align-self: center;
 
   &:hover {
     color: #fff;

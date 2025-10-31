@@ -793,18 +793,24 @@ fn QuestionPage() -> impl IntoView {
 
     view! {
         <div class="question-container">
-            <h2 class="question-text">{q_text}</h2>
-            <Show when=move || revealed.get() fallback=|| view! { <p /> }>
-                <div class="answer-section">
-                    <strong class="answer-text">{a_text}</strong>
-                </div>
-            </Show>
-            <button class="reveal-btn" on:click=move |_| revealed.set(true)>
-                "Answer"
-            </button>
-            <a class="back-link" href="/">
-                "Back"
-            </a>
+            <div class="question-header">
+                <h2 class="question-text">{q_text}</h2>
+            </div>
+            <div class="middle-area">
+                <Show when=move || revealed.get() fallback=|| view! { <div /> }>
+                    <div class="answer-section">
+                        <strong class="answer-text">{a_text}</strong>
+                    </div>
+                </Show>
+            </div>
+            <div class="button-row">
+                <button class="reveal-btn" on:click=move |_| revealed.set(true)>
+                    "Answer"
+                </button>
+                <a class="back-link" href="/">
+                    "Back"
+                </a>
+            </div>
         </div>
     }
 }
