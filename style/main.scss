@@ -48,7 +48,7 @@ body {
   align-self: center;
   text-align: center;
   padding: 20px;
-  font-size: 42px;
+  font-size: 72px;
   font-family: 'Bangers', cursive;
 }
 
@@ -97,7 +97,7 @@ body {
 .score-text {
   font-family: 'Bangers', cursive;
   font-weight: bold;
-  font-size: 48px;
+  font-size: 72px;
 }
 
 .image-stack {
@@ -222,7 +222,7 @@ body {
 }
 
 .jeopardy-grid th {
-  font-size: 18px;
+  font-size: 28px;
   height: 80px;
   padding: 15px;
   text-transform: uppercase;
@@ -270,7 +270,7 @@ body {
   text-decoration: none;
   color: inherit;
   font-family: 'Bangers', cursive;
-  font-size: 28px;
+  font-size: 60px;
   font-weight: bold;
   transition: opacity 0.2s ease;
 
@@ -302,7 +302,7 @@ body {
   padding: 40px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  font-size: clamp(16px, 4vw, 24px); // Scales text with viewport width
+  font-size: clamp(16px, 5vw, 48px); // Scales text with viewport width
   text-align: center;
 }
 
@@ -330,7 +330,7 @@ body {
 
 .question-text {
   color: #e0e0e0;
-  font-size: 1.5em;
+  font-size: 2.5em;
   margin-bottom: 0;
   line-height: 1.4;
   width: 100%;
@@ -350,7 +350,7 @@ body {
 
 .answer-text {
   color: #fff;
-  font-size: 1.2em; // Relative to container
+  font-size: 2em; // Relative to container
   background-color: #333;
   padding: 20px;
   border-radius: 4px;
@@ -393,6 +393,20 @@ body {
     background-color: #4ECDC4;
   }
 }
+
+// @media (min-width: 1920px) {
+//   .question-container {
+//     font-size: clamp(24px, 6vw, 72px); // Even larger base for huge screens
+//   }
+//
+//   .question-text {
+//     font-size: 3em; // Extra boost
+//   }
+//
+//   .answer-text {
+//     font-size: 2.5em; // Extra boost
+//   }
+// }
 
 // Responsive tweaks
 @media (max-width: 768px) {

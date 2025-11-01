@@ -47,7 +47,7 @@ pub const CATEGORIES: &[(&str, &[(&str, &str)])] = &[
         "Witches, Wizards, etc.",
         &[
             ("Who said it?\n\n\"It is our choices, Harry, that show what we truly are, far more than our abilities\"", "Albus Dumbledore"),
-            ("Who is Slytherin house's ghost?", "The Bloody Baron"),
+            ("Who is Gryffindor house's ghost?", "Nearly Headless Nick"),
             ("Who does Hermione attempt to turn into when she takes Polyjuice Potion in the second year?", "Millicent Bulstrode"),
             ("Who said it?\n\n\"Oh Potter, you rotter, oh, what have you done,\nYou're killing off students, you think it's good fun\"", "Peeves"),
             ("Who was the headmaster of Hogwarts before Albus Dumbledore?", "Armando Dippet"),
